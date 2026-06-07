@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # 1. BASE DE DATOS (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: adesco_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - adesco_network
+
+  # 2. BACKEND (Spring Boot)
+  backend:
+    build: ./backend
+    container_name: adesco_backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: ${JDBC_DATABASE_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET}
+    ports:
+      - "8080:8080"
+    networks:
+      - adesco_network
+
+  # 3. FRONTEND (Angular + Nginx)
+  frontend:
+    build: ./frontend
+    container_name: adesco_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - adesco_network
+
+volumes:
+  postgres_data:
+
+networks:
+  adesco_network:
+    driver: bridge

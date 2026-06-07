@@ -1,0 +1,38 @@
+/* Import PrimeIcons and PrimeFlex */
+@import "primeicons/primeicons.css";
+@import "primeflex/primeflex.css";
+
+/* Base Styles */
+:root {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--surface-ground);
+    color: var(--text-color);
+}
+
+/* Mobile-First Responsive Utilities */
+.container {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+/* Large screens (Desktop) */
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+/* Extra large screens */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
