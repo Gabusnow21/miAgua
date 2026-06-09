@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
@@ -22,10 +23,12 @@ public class PagoController {
     private final PagoService pagoService;
     private final SecurityUtils securityUtils;
 
-    @PostMapping
+    @PostMapping(consumes = {"multipart/form-data"})
     @PreAuthorize("hasRole('VECINO')")
-    public ResponseEntity<PagoDTO> registrar(@Valid @RequestBody PagoRequestDTO dto) {
-        return new ResponseEntity<>(pagoService.registrarPago(dto), HttpStatus.CREATED);
+    public ResponseEntity<PagoDTO> registrar(
+            @Valid @RequestPart("pago") PagoRequestDTO dto,
+            @RequestPart("file") MultipartFile file) {
+        return new ResponseEntity<>(pagoService.registrarPago(dto, file), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}/verificar")

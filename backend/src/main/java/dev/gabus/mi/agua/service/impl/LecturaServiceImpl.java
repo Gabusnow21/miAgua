@@ -34,6 +34,11 @@ public class LecturaServiceImpl implements LecturaService {
         Usuario registradoPor = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
+        // Validar que no exista lectura para el mismo periodo
+        if (lecturaRepository.existsByPropiedadIdAndAnioAndMes(dto.getPropiedadId(), dto.getAnio(), dto.getMes())) {
+            throw new IllegalArgumentException("Ya existe una lectura registrada para esta propiedad en el periodo " + dto.getMes() + "/" + dto.getAnio());
+        }
+
         // Obtener lectura anterior para calcular consumo
         Double lecturaAnterior = lecturaRepository.findTopByPropiedadIdOrderByAnioDescMesDesc(propiedad.getId())
                 .map(Lectura::getLecturaActual)
