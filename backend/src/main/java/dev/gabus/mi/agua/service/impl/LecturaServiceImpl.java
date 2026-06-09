@@ -7,6 +7,7 @@ import dev.gabus.mi.agua.model.entity.*;
 import dev.gabus.mi.agua.model.enums.PaymentStatus;
 import dev.gabus.mi.agua.repository.*;
 import dev.gabus.mi.agua.service.LecturaService;
+import dev.gabus.mi.agua.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ public class LecturaServiceImpl implements LecturaService {
     private final UsuarioRepository usuarioRepository;
     private final TarifaRepository tarifaRepository;
     private final ReciboRepository reciboRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -85,6 +87,9 @@ public class LecturaServiceImpl implements LecturaService {
                 .build();
 
         reciboRepository.save(recibo);
+
+        // Notificar al vecino
+        notificationService.enviarNotificacionNuevoRecibo(recibo);
     }
 
     @Override

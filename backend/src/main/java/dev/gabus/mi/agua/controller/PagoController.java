@@ -35,9 +35,10 @@ public class PagoController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> verificar(
             @PathVariable Long id, 
-            @RequestParam boolean aprobado) {
+            @RequestParam boolean aprobado,
+            @RequestParam(required = false) String motivo) {
         Long adminIdActual = securityUtils.getCurrentUserId();
-        pagoService.verificarPago(id, adminIdActual, aprobado);
+        pagoService.verificarPago(id, adminIdActual, aprobado, motivo);
         return ResponseEntity.ok().build();
     }
 

@@ -11,6 +11,7 @@ import dev.gabus.mi.agua.repository.PagoRepository;
 import dev.gabus.mi.agua.repository.ReciboRepository;
 import dev.gabus.mi.agua.repository.UsuarioRepository;
 import dev.gabus.mi.agua.service.FileStorageService;
+import dev.gabus.mi.agua.service.NotificationService;
 import dev.gabus.mi.agua.service.PagoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class PagoServiceImpl implements PagoService {
     private final ReciboRepository reciboRepository;
     private final UsuarioRepository usuarioRepository;
     private final FileStorageService fileStorageService;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -56,7 +58,7 @@ public class PagoServiceImpl implements PagoService {
 
     @Override
     @Transactional
-    public void verificarPago(Long pagoId, Long adminId, boolean aprobado) {
+    public void verificarPago(Long pagoId, Long adminId, boolean aprobado, String motivo) {
         Pago pago = pagoRepository.findById(pagoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pago no encontrado"));
 
@@ -72,6 +74,8 @@ public class PagoServiceImpl implements PagoService {
             recibo.setEstado(PaymentStatus.PAGADO);
         } else {
             recibo.setEstado(PaymentStatus.RECHAZADO);
+            // Notificar al vecino
+            notificationService.enviarNotificacionPagoRechazado(recibo, motivo);
         }
         reciboRepository.save(recibo);
     }
