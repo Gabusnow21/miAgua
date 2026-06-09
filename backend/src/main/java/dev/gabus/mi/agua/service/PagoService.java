@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface PagoService {
     PagoDTO registrarPago(PagoRequestDTO pagoRequestDTO, MultipartFile file);
-    void verificarPago(Long pagoId, Long adminId, boolean aprobado);
+    void verificarPago(Long pagoId, Long adminId, boolean aprobado, String motivo);
     List<PagoDTO> listarPorRecibo(Long reciboId);
 }
