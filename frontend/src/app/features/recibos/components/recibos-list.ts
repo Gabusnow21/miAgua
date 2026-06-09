@@ -10,6 +10,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ReciboService } from '../../../services/recibo.service';
 import { PagoService } from '../../../services/pago.service';
+import { PdfService } from '../../../services/pdf.service';
 import { Recibo, PaymentStatus } from '../../../models/interfaces';
 
 @Component({
@@ -77,6 +78,14 @@ import { Recibo, PaymentStatus } from '../../../models/interfaces';
                                 severity="primary"
                                 size="small"
                                 (onClick)="abrirModalPago(recibo)">
+                            </p-button>
+                            <p-button 
+                                icon="pi pi-file-pdf" 
+                                [rounded]="true" 
+                                [text]="true" 
+                                severity="danger" 
+                                title="Descargar PDF"
+                                (onClick)="descargarPdf(recibo)">
                             </p-button>
                             <p-button 
                                 icon="pi pi-eye" 
@@ -151,6 +160,7 @@ export class RecibosListComponent implements OnInit {
   constructor(
     private reciboService: ReciboService,
     private pagoService: PagoService,
+    private pdfService: PdfService,
     private messageService: MessageService
   ) {}
 
@@ -227,5 +237,9 @@ export class RecibosListComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo registrar el pago' });
       }
     });
+  }
+
+  descargarPdf(recibo: Recibo) {
+    this.pdfService.generateReciboPdf(recibo);
   }
 }
