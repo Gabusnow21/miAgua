@@ -18,7 +18,8 @@ import { AuthService } from '../../auth/services/auth.service';
         </ng-template>
         <ng-template pTemplate="end">
             <div class="flex align-items-center gap-2">
-                <span class="hidden sm:inline font-medium">ADESCO Comunidad</span>
+                <span class="hidden sm:inline font-medium" *ngIf="username">Hola, {{ username }}</span>
+                <span class="hidden sm:inline font-medium" *ngIf="!username">ADESCO Comunidad</span>
                 <i class="pi pi-user-circle text-2xl cursor-pointer"></i>
             </div>
         </ng-template>
@@ -33,45 +34,48 @@ import { AuthService } from '../../auth/services/auth.service';
 })
 export class NavbarComponent implements OnInit {
   items: MenuItem[] | undefined;
+  username: string | null = null;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    const role = this.authService.getUserRole();
-    const isLoggedIn = this.authService.isLoggedIn();
-    
+    this.authService.authState$.subscribe(state => {
+      this.username = state.username;
+      this.buildMenu(state.isLoggedIn, state.role);
+    });
+  }
+
+  private buildMenu(isLoggedIn: boolean, role: string | null) {
     this.items = [
       { label: 'Inicio', icon: 'pi pi-home', routerLink: '/' }
     ];
 
-    if (role === 'VECINO') {
-        this.items.push(
-            { label: 'Mis Recibos', icon: 'pi pi-file-pdf', routerLink: '/recibos' }
-        );
-    } else if (role === 'ADMIN' || role === 'OPERADOR') {
-        this.items.push(
-            { label: 'Propiedades', icon: 'pi pi-building', routerLink: '/propiedades' },
-            { label: 'Lecturas', icon: 'pi pi-pencil', routerLink: '/lecturas' },
-            { label: 'Recibos', icon: 'pi pi-file-pdf', routerLink: '/recibos' }
-        );
-        
-        if (role === 'ADMIN') {
-            this.items.push({
-                label: 'Configuración',
-                icon: 'pi pi-cog',
-                items: [
-                    { label: 'Tarifas', icon: 'pi pi-money-bill', routerLink: '/config/tarifas' },
-                    { label: 'Usuarios', icon: 'pi pi-users', routerLink: '/config/usuarios' }
-                ]
-            });
-        }
-    }
-
-    // Añadir botón de login/logout
     if (isLoggedIn) {
-        this.items.push({ label: 'Cerrar Sesión', icon: 'pi pi-sign-out', command: () => this.authService.logout() });
+      if (role === 'VECINO') {
+        this.items.push(
+          { label: 'Mis Recibos', icon: 'pi pi-file-pdf', routerLink: '/recibos' }
+        );
+      } else if (role === 'ADMIN' || role === 'OPERADOR') {
+        this.items.push(
+          { label: 'Propiedades', icon: 'pi pi-building', routerLink: '/propiedades' },
+          { label: 'Lecturas', icon: 'pi pi-pencil', routerLink: '/lecturas' },
+          { label: 'Recibos', icon: 'pi pi-file-pdf', routerLink: '/recibos' }
+        );
+
+        if (role === 'ADMIN') {
+          this.items.push({
+            label: 'Configuración',
+            icon: 'pi pi-cog',
+            items: [
+              { label: 'Tarifas', icon: 'pi pi-money-bill', routerLink: '/config/tarifas' },
+              { label: 'Usuarios', icon: 'pi pi-users', routerLink: '/config/usuarios' }
+            ]
+          });
+        }
+      }
+      this.items.push({ label: 'Cerrar Sesión', icon: 'pi pi-sign-out', command: () => this.authService.logout() });
     } else {
-        this.items.push({ label: 'Iniciar Sesión', icon: 'pi pi-sign-in', routerLink: '/login' });
+      this.items.push({ label: 'Iniciar Sesión', icon: 'pi pi-sign-in', routerLink: '/login' });
     }
   }
 }
