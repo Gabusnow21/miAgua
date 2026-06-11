@@ -58,14 +58,15 @@ import { Tarifa } from '../../../models/interfaces';
                     </td>
                     <td>
                         <span class="p-column-title font-bold">Acciones</span>
-                        <p-button 
-                            *ngIf="!tarifa.activa" 
-                            icon="pi pi-power-off" 
-                            label="Activar" 
-                            [text]="true" 
-                            severity="warn"
-                            (onClick)="activarTarifa(tarifa)">
-                        </p-button>
+                        @if (!tarifa.activa) {
+                            <p-button 
+                                icon="pi pi-power-off" 
+                                label="Activar" 
+                                [text]="true" 
+                                severity="warn"
+                                (onClick)="activarTarifa(tarifa)">
+                            </p-button>
+                        }
                     </td>
                 </tr>
             </ng-template>

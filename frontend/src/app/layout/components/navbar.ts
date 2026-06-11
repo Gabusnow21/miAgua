@@ -18,8 +18,12 @@ import { AuthService } from '../../auth/services/auth.service';
         </ng-template>
         <ng-template pTemplate="end">
             <div class="flex align-items-center gap-2">
-                <span class="hidden sm:inline font-medium" *ngIf="username">Hola, {{ username }}</span>
-                <span class="hidden sm:inline font-medium" *ngIf="!username">ADESCO Comunidad</span>
+                @if (username) {
+                    <span class="hidden sm:inline font-medium">Hola, {{ username }}</span>
+                }
+                @if (!username) {
+                    <span class="hidden sm:inline font-medium">ADESCO Comunidad</span>
+                }
                 <i class="pi pi-user-circle text-2xl cursor-pointer"></i>
             </div>
         </ng-template>

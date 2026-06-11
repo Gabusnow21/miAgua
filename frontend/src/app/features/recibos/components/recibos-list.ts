@@ -69,15 +69,16 @@ import { Recibo, PaymentStatus } from '../../../models/interfaces';
                     <td>
                         <span class="p-column-title font-bold">Acciones</span>
                         <div class="flex gap-2">
-                            <p-button 
-                                *ngIf="recibo.estado === 'PENDIENTE' || recibo.estado === 'RECHAZADO'"
-                                icon="pi pi-upload" 
-                                label="Pagar"
-                                [rounded]="true" 
-                                severity="primary"
-                                size="small"
-                                (onClick)="abrirModalPago(recibo)">
-                            </p-button>
+                            @if (recibo.estado === 'PENDIENTE' || recibo.estado === 'RECHAZADO') {
+                                <p-button 
+                                    icon="pi pi-upload" 
+                                    label="Pagar"
+                                    [rounded]="true" 
+                                    severity="primary"
+                                    size="small"
+                                    (onClick)="abrirModalPago(recibo)">
+                                </p-button>
+                            }
                             <p-button 
                                 icon="pi pi-eye" 
                                 [rounded]="true" 

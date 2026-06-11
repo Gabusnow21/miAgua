@@ -56,9 +56,11 @@ import { Router } from '@angular/router';
                 </div>
               </ng-template>
             </p-select>
-            <small class="text-red-500" *ngIf="form.get('propiedadId')?.touched && form.get('propiedadId')?.invalid">
-              La propiedad es obligatoria.
-            </small>
+            @if (form.get('propiedadId')?.touched && form.get('propiedadId')?.invalid) {
+              <small class="text-red-500">
+                La propiedad es obligatoria.
+              </small>
+            }
           </div>
 
           <div class="grid p-0 m-0 gap-4 md:gap-0">
@@ -104,9 +106,11 @@ import { Router } from '@angular/router';
               incrementButtonIcon="pi pi-plus"
               decrementButtonIcon="pi pi-minus">
             </p-inputNumber>
-            <small class="text-red-500" *ngIf="form.get('lecturaActual')?.touched && form.get('lecturaActual')?.invalid">
-              La lectura actual es obligatoria.
-            </small>
+            @if (form.get('lecturaActual')?.touched && form.get('lecturaActual')?.invalid) {
+              <small class="text-red-500">
+                La lectura actual es obligatoria.
+              </small>
+            }
           </div>
 
           <div class="flex flex-column gap-2">
