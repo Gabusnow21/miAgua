@@ -44,8 +44,12 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         usuarioRepository.save(usuario);
+        
+        UserDetails userDetails = userDetailsService.loadUserByUsername(usuario.getUsername());
+        String jwt = jwtUtils.generateToken(userDetails);
 
         return AuthResponseDTO.builder()
+                .token(jwt)
                 .username(usuario.getUsername())
                 .role(usuario.getRole().name())
                 .build();
@@ -60,10 +64,14 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
 
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+        String jwt = jwtUtils.generateToken(userDetails);
+        
         Usuario usuario = usuarioRepository.findByUsername(request.getUsername())
                 .orElseThrow();
 
         return AuthResponseDTO.builder()
+                .token(jwt)
                 .username(usuario.getUsername())
                 .role(usuario.getRole().name())
                 .build();

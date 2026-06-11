@@ -43,7 +43,10 @@ public class AuthController {
             HttpServletResponse response
     ) {
         AuthResponseDTO authResponse = authService.authenticate(request);
-        setCookie(response, authResponse.getToken());
+        // Ensure token is not null before setting cookie
+        if (authResponse.getToken() != null) {
+            setCookie(response, authResponse.getToken());
+        }
         return ResponseEntity.ok(authResponse);
     }
 
