@@ -35,7 +35,7 @@ import { Usuario, UserRole } from '../../../models/interfaces';
             <p-button label="Nuevo Usuario" icon="pi pi-plus" (onClick)="abrirDialogoNuevo()"></p-button>
         </div>
 
-        <p-table [value]="usuarios" [loading]="loading" styleClass="p-datatable-sm" [responsiveLayout]="'stack'">
+        <p-table [value]="usuarios" [loading]="loading" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'960px'">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Nombre</th>

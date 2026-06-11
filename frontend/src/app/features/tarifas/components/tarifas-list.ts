@@ -35,7 +35,7 @@ import { Tarifa } from '../../../models/interfaces';
             <p-button label="Nueva Tarifa" icon="pi pi-plus" (onClick)="abrirDialogoNueva()"></p-button>
         </div>
 
-        <p-table [value]="tarifas" [loading]="loading" styleClass="p-datatable-sm" [responsiveLayout]="'stack'">
+        <p-table [value]="tarifas" [loading]="loading" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'960px'">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Nombre</th>
