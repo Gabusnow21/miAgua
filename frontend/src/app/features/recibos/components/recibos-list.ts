@@ -69,15 +69,16 @@ import { Recibo, PaymentStatus } from '../../../models/interfaces';
                     <td>
                         <span class="p-column-title font-bold">Acciones</span>
                         <div class="flex gap-2">
-                            <p-button 
-                                *ngIf="recibo.estado === 'PENDIENTE' || recibo.estado === 'RECHAZADO'"
-                                icon="pi pi-upload" 
-                                label="Pagar"
-                                [rounded]="true" 
-                                severity="primary"
-                                size="small"
-                                (onClick)="abrirModalPago(recibo)">
-                            </p-button>
+                            @if (recibo.estado === 'PENDIENTE' || recibo.estado === 'RECHAZADO') {
+                                <p-button 
+                                    icon="pi pi-upload" 
+                                    label="Pagar"
+                                    [rounded]="true" 
+                                    severity="primary"
+                                    size="small"
+                                    (onClick)="abrirModalPago(recibo)">
+                                </p-button>
+                            }
                             <p-button 
                                 icon="pi pi-eye" 
                                 [rounded]="true" 
@@ -202,24 +203,25 @@ export class RecibosListComponent implements OnInit {
   }
 
   enviarPago() {
-    if (!this.selectedRecibo) return;
+    if (!this.selectedRecibo || !this.uploadedFile) {
+        this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'Debe seleccionar un comprobante' });
+        return;
+    }
 
     this.submittingPago = true;
     
-    // Simulamos el envío del pago
-    // En el backend, esto requiere el reciboId y otros datos
     const pagoRequest = {
       reciboId: this.selectedRecibo.id,
       montoPagado: this.selectedRecibo.montoTotal,
       metodoPago: 'TRANSFERENCIA'
-      // El archivo se enviaría en una petición multipart si el backend lo soporta
     };
 
-    this.pagoService.registrar(pagoRequest).subscribe({
+    this.pagoService.registrar(pagoRequest, this.uploadedFile).subscribe({
       next: () => {
         this.messageService.add({ severity: 'success', summary: 'Pago Enviado', detail: 'Su comprobante está en revisión' });
         this.displayPagoModal = false;
         this.submittingPago = false;
+        this.uploadedFile = null;
         this.cargarRecibos(); // Recargar para ver el cambio de estado a EN_REVISION
       },
       error: (err) => {

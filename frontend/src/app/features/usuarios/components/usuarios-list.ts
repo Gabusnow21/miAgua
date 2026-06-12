@@ -35,7 +35,7 @@ import { Usuario, UserRole } from '../../../models/interfaces';
             <p-button label="Nuevo Usuario" icon="pi pi-plus" (onClick)="abrirDialogoNuevo()"></p-button>
         </div>
 
-        <p-table [value]="usuarios" [loading]="loading" styleClass="p-datatable-sm" [responsiveLayout]="'stack'">
+        <p-table [value]="usuarios" [loading]="loading" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'960px'">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Nombre</th>
@@ -93,10 +93,12 @@ import { Usuario, UserRole } from '../../../models/interfaces';
                 <label for="email">Email</label>
                 <input id="email" pInputText formControlName="email" />
             </div>
-            <div class="flex flex-column gap-2" *ngIf="!editMode">
-                <label for="password">Contraseña</label>
-                <input id="password" type="password" pInputText formControlName="password" />
-            </div>
+            @if (!editMode) {
+                <div class="flex flex-column gap-2">
+                    <label for="password">Contraseña</label>
+                    <input id="password" type="password" pInputText formControlName="password" />
+                </div>
+            }
             <div class="flex flex-column gap-2">
                 <label for="role">Rol</label>
                 <p-select id="role" [options]="roles" formControlName="role" placeholder="Seleccione un rol" styleClass="w-full"></p-select>

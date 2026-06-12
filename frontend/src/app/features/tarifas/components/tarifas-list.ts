@@ -35,7 +35,7 @@ import { Tarifa } from '../../../models/interfaces';
             <p-button label="Nueva Tarifa" icon="pi pi-plus" (onClick)="abrirDialogoNueva()"></p-button>
         </div>
 
-        <p-table [value]="tarifas" [loading]="loading" styleClass="p-datatable-sm" [responsiveLayout]="'stack'">
+        <p-table [value]="tarifas" [loading]="loading" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'960px'">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Nombre</th>
@@ -58,14 +58,15 @@ import { Tarifa } from '../../../models/interfaces';
                     </td>
                     <td>
                         <span class="p-column-title font-bold">Acciones</span>
-                        <p-button 
-                            *ngIf="!tarifa.activa" 
-                            icon="pi pi-power-off" 
-                            label="Activar" 
-                            [text]="true" 
-                            severity="warn"
-                            (onClick)="activarTarifa(tarifa)">
-                        </p-button>
+                        @if (!tarifa.activa) {
+                            <p-button 
+                                icon="pi pi-power-off" 
+                                label="Activar" 
+                                [text]="true" 
+                                severity="warn"
+                                (onClick)="activarTarifa(tarifa)">
+                            </p-button>
+                        }
                     </td>
                 </tr>
             </ng-template>
