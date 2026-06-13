@@ -10,17 +10,17 @@ import { CommonModule } from '@angular/common';
     imports: [ReactiveFormsModule, CommonModule],
     template: `
         <div class="login-wrapper">
-            <div class="login-card" [class.register-mode]="isRegistering">
+            <div class="login-card">
                 <h2>{{ isRegistering ? 'Crear Cuenta' : 'Iniciar Sesión' }}</h2>
                 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
                     <div class="form-group">
                         <label for="username">Usuario</label>
-                        <input id="username" formControlName="username" placeholder="Tu usuario" />
+                        <input id="username" formControlName="username" placeholder="Escribe tu usuario" />
                     </div>
                     <div class="form-group password-group">
                         <label for="password">Contraseña</label>
                         <div class="password-input-wrapper">
-                            <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="••••••••" />
+                            <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Escribe tu contraseña" />
                             <i class="pi" [class]="showPassword ? 'pi-eye-slash' : 'pi-eye'" (click)="togglePasswordVisibility()"></i>
                         </div>
                     </div>
@@ -43,25 +43,20 @@ import { CommonModule } from '@angular/common';
     `,
     styles: [`
         .login-wrapper {
-            position: relative;
-            min-height: 80vh;
+            min-height: 100vh;
             display: flex;
+            justify-content: center;
             align-items: center;
+            padding: 1rem;
         }
         .login-card {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             width: 100%;
             max-width: 400px;
-            position: absolute;
-            left: 10%;
-            transition: left 0.5s ease-in-out;
-        }
-        .login-card.register-mode {
-            left: 60%;
         }
         h2 { color: #fff; margin-bottom: 1.5rem; text-align: center; }
         .login-form { display: flex; flex-direction: column; gap: 1rem; }
