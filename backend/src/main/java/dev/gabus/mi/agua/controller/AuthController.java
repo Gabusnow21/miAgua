@@ -29,32 +29,48 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDTO> register(
-            @Valid @RequestBody RegisterRequestDTO request
+            @Valid @RequestBody RegisterRequestDTO request,
+            HttpServletResponse response
     ) {
-        return ResponseEntity.ok(authService.register(request));
+        AuthResponseDTO authResponse = authService.register(request);
+        setCookie(response, authResponse.getToken());
+        return ResponseEntity.ok(authResponse);
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> authenticate(
             @Valid @RequestBody AuthRequestDTO request,
-            HttpServletResponse response // Recibir HttpServletResponse
+            HttpServletResponse response
     ) {
         AuthResponseDTO authResponse = authService.authenticate(request);
-        
-        // Generar token y establecer cookie
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-        String token = jwtUtils.generateToken(userDetails);
-        
+        // Ensure token is not null before setting cookie
+        if (authResponse.getToken() != null) {
+            setCookie(response, authResponse.getToken());
+        }
+        return ResponseEntity.ok(authResponse);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .secure(false) // Debería ser true en producción
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        return ResponseEntity.ok().build();
+    }
+
+    private void setCookie(HttpServletResponse response, String token) {
         ResponseCookie cookie = ResponseCookie.from("jwt", token)
                 .httpOnly(true)
-                .secure(true) // Configurar en true para producción con HTTPS
+                .secure(false) // Configurar en true para producción con HTTPS
                 .path("/")
                 .maxAge(86400) // 24 horas
                 .sameSite("Strict")
                 .build();
-        
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-        
-        return ResponseEntity.ok(authResponse);
     }
 }
