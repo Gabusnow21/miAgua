@@ -5,15 +5,14 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { UsuarioService } from '../../../services/usuario.service';
-import { Usuario, UserRole } from '../../../models/interfaces';
+import { UsuarioService } from '../../services/usuario.service';
+import { Usuario, UserRole } from '../../models/interfaces';
 
 @Component({
-  selector: 'app-usuarios-list',
+  selector: 'app-propietarios',
   standalone: true,
   imports: [
     CommonModule, 
@@ -22,7 +21,6 @@ import { Usuario, UserRole } from '../../../models/interfaces';
     TagModule, 
     DialogModule, 
     InputTextModule, 
-    SelectModule,
     FormsModule, 
     ReactiveFormsModule, 
     ToastModule
@@ -31,78 +29,74 @@ import { Usuario, UserRole } from '../../../models/interfaces';
   template: `
     <div class="card">
         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center mb-4 gap-3">
-            <h2 class="m-0 text-2xl font-bold">Gestión de Usuarios</h2>
-            <p-button label="Nuevo Usuario" icon="pi pi-plus" (onClick)="abrirDialogoNuevo()"></p-button>
+            <h2 class="m-0 text-2xl font-bold">Gestión de Propietarios (Vecinos)</h2>
+            <p-button label="Nuevo Propietario" icon="pi pi-plus" (onClick)="abrirDialogoNuevo()"></p-button>
         </div>
 
-        <p-table [value]="usuarios()" [loading]="loading()" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'960px'">
+        <p-table [value]="propietarios()" [loading]="loading()" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'960px'">
             <ng-template pTemplate="header">
                 <tr>
-                    <th>Nombre</th>
+                    <th>Nombre Completo</th>
                     <th>Usuario</th>
                     <th>Email</th>
-                    <th>Rol</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-usuario>
+            <ng-template pTemplate="body" let-propietario>
                 <tr>
-                    <td><span class="p-column-title font-bold">Nombre</span>{{usuario.fullName}}</td>
-                    <td><span class="p-column-title font-bold">Usuario</span>{{usuario.username}}</td>
-                    <td><span class="p-column-title font-bold">Email</span>{{usuario.email}}</td>
-                    <td>
-                        <span class="p-column-title font-bold">Rol</span>
-                        <p-tag [value]="usuario.role" [severity]="getRoleSeverity(usuario.role)"></p-tag>
-                    </td>
+                    <td><span class="p-column-title font-bold">Nombre</span>{{propietario.fullName}}</td>
+                    <td><span class="p-column-title font-bold">Usuario</span>{{propietario.username}}</td>
+                    <td><span class="p-column-title font-bold">Email</span>{{propietario.email}}</td>
                     <td>
                         <span class="p-column-title font-bold">Estado</span>
-                        <p-tag [value]="usuario.enabled ? 'Activo' : 'Inactivo'" 
-                               [severity]="usuario.enabled ? 'success' : 'danger'">
+                        <p-tag [value]="propietario.enabled ? 'Activo' : 'Inactivo'" 
+                               [severity]="propietario.enabled ? 'success' : 'danger'">
                         </p-tag>
                     </td>
                     <td>
                         <span class="p-column-title font-bold">Acciones</span>
                         <div class="flex gap-2">
-                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary" (onClick)="editarUsuario(usuario)"></p-button>
+                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary" (onClick)="editarPropietario(propietario)"></p-button>
                             <p-button 
-                                [icon]="usuario.enabled ? 'pi pi-user-minus' : 'pi pi-user-plus'" 
+                                [icon]="propietario.enabled ? 'pi pi-user-minus' : 'pi pi-user-plus'" 
                                 [rounded]="true" 
                                 [text]="true" 
-                                [severity]="usuario.enabled ? 'danger' : 'success'"
-                                (onClick)="toggleEstado(usuario)">
+                                [severity]="propietario.enabled ? 'danger' : 'success'"
+                                (onClick)="toggleEstado(propietario)">
                             </p-button>
                         </div>
                     </td>
                 </tr>
             </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="text-center p-4 text-600">No se encontraron propietarios.</td>
+                </tr>
+            </ng-template>
         </p-table>
     </div>
 
-    <p-dialog [(visible)]="displayDialog" [header]="editMode ? 'Editar Usuario' : 'Nuevo Usuario'" [modal]="true" [style]="{width: '450px'}">
+    <p-dialog [(visible)]="displayDialog" [header]="editMode ? 'Editar Propietario' : 'Nuevo Propietario'" [modal]="true" [style]="{width: '450px'}">
         <form [formGroup]="form" (ngSubmit)="guardar()" class="flex flex-column gap-3 py-2">
             <div class="flex flex-column gap-2">
                 <label for="fullName">Nombre Completo</label>
-                <input id="fullName" pInputText formControlName="fullName" />
+                <input id="fullName" pInputText formControlName="fullName" placeholder="Ej: Juan Pérez" />
             </div>
             <div class="flex flex-column gap-2">
                 <label for="username">Nombre de Usuario</label>
-                <input id="username" pInputText formControlName="username" [readonly]="editMode" />
+                <input id="username" pInputText formControlName="username" [readonly]="editMode" placeholder="ejperez" />
             </div>
             <div class="flex flex-column gap-2">
                 <label for="email">Email</label>
-                <input id="email" pInputText formControlName="email" />
+                <input id="email" pInputText formControlName="email" placeholder="correo@ejemplo.com" />
             </div>
             @if (!editMode) {
                 <div class="flex flex-column gap-2">
-                    <label for="password">Contraseña</label>
-                    <input id="password" type="password" pInputText formControlName="password" />
+                    <label for="password">Contraseña Temporal</label>
+                    <input id="password" type="password" pInputText formControlName="password" placeholder="********" />
                 </div>
             }
-            <div class="flex flex-column gap-2">
-                <label for="role">Rol</label>
-                <p-select id="role" [options]="roles" formControlName="role" placeholder="Seleccione un rol" styleClass="w-full"></p-select>
-            </div>
         </form>
         <ng-template pTemplate="footer">
             <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="displayDialog = false"></p-button>
@@ -111,22 +105,17 @@ import { Usuario, UserRole } from '../../../models/interfaces';
     </p-dialog>
 
     <p-toast></p-toast>
-  `
+  `,
+  styles: []
 })
-export class UsuariosListComponent implements OnInit {
-  usuarios = signal<Usuario[]>([]);
+export class PropietariosComponent implements OnInit {
+  propietarios = signal<Usuario[]>([]);
   loading = signal<boolean>(true);
   displayDialog: boolean = false;
   submitting: boolean = false;
   editMode: boolean = false;
-  selectedUsuarioId: number | null = null;
+  selectedPropietarioId: number | null = null;
   form: FormGroup;
-
-  roles = [
-    { label: 'Administrador', value: UserRole.ADMIN },
-    { label: 'Operador', value: UserRole.OPERADOR },
-    { label: 'Vecino', value: UserRole.VECINO }
-  ];
 
   constructor(
     private usuarioService: UsuarioService,
@@ -138,50 +127,42 @@ export class UsuariosListComponent implements OnInit {
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: [''],
-      role: [UserRole.VECINO, Validators.required],
+      role: [UserRole.VECINO],
       enabled: [true]
     });
   }
 
   ngOnInit() {
-    this.cargarUsuarios();
+    this.cargarPropietarios();
   }
 
-  cargarUsuarios() {
+  cargarPropietarios() {
     this.loading.set(true);
     this.usuarioService.listarTodos().subscribe({
       next: (data) => {
-        this.usuarios.set(data);
+        const filtered = data.filter(u => u.role === UserRole.VECINO);
+        this.propietarios.set(filtered);
         this.loading.set(false);
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los usuarios' });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los propietarios' });
         this.loading.set(false);
       }
     });
   }
 
-  getRoleSeverity(role: string): any {
-    switch (role) {
-      case 'ADMIN': return 'danger';
-      case 'OPERADOR': return 'info';
-      case 'VECINO': return 'success';
-      default: return 'secondary';
-    }
-  }
-
   abrirDialogoNuevo() {
     this.editMode = false;
-    this.selectedUsuarioId = null;
+    this.selectedPropietarioId = null;
     this.form.reset({ role: UserRole.VECINO, enabled: true });
     this.form.get('password')?.setValidators([Validators.required]);
     this.displayDialog = true;
   }
 
-  editarUsuario(usuario: Usuario) {
+  editarPropietario(propietario: Usuario) {
     this.editMode = true;
-    this.selectedUsuarioId = usuario.id!;
-    this.form.patchValue(usuario);
+    this.selectedPropietarioId = propietario.id!;
+    this.form.patchValue(propietario);
     this.form.get('password')?.clearValidators();
     this.displayDialog = true;
   }
@@ -190,25 +171,27 @@ export class UsuariosListComponent implements OnInit {
     if (this.form.invalid) return;
     this.submitting = true;
 
-    if (this.editMode && this.selectedUsuarioId) {
-      this.usuarioService.actualizar(this.selectedUsuarioId, this.form.value).subscribe({
-        next: () => this.onSuccess('Usuario actualizado'),
-        error: () => this.onError('No se pudo actualizar el usuario')
+    const userData = { ...this.form.value, role: UserRole.VECINO };
+
+    if (this.editMode && this.selectedPropietarioId) {
+      this.usuarioService.actualizar(this.selectedPropietarioId, userData).subscribe({
+        next: () => this.onSuccess('Propietario actualizado'),
+        error: () => this.onError('No se pudo actualizar el propietario')
       });
     } else {
-      this.usuarioService.crear(this.form.value).subscribe({
-        next: () => this.onSuccess('Usuario creado'),
-        error: () => this.onError('No se pudo crear el usuario')
+      this.usuarioService.crear(userData).subscribe({
+        next: () => this.onSuccess('Propietario creado'),
+        error: () => this.onError('No se pudo crear el propietario')
       });
     }
   }
 
-  toggleEstado(usuario: Usuario) {
-    if (!usuario.id) return;
-    this.usuarioService.actualizar(usuario.id, { enabled: !usuario.enabled }).subscribe({
+  toggleEstado(propietario: Usuario) {
+    if (!propietario.id) return;
+    this.usuarioService.actualizar(propietario.id, { enabled: !propietario.enabled }).subscribe({
       next: () => {
         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Estado actualizado' });
-        this.cargarUsuarios();
+        this.cargarPropietarios();
       },
       error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el estado' })
     });
@@ -218,7 +201,7 @@ export class UsuariosListComponent implements OnInit {
     this.messageService.add({ severity: 'success', summary: 'Éxito', detail: msg });
     this.displayDialog = false;
     this.submitting = false;
-    this.cargarUsuarios();
+    this.cargarPropietarios();
   }
 
   onError(msg: string) {

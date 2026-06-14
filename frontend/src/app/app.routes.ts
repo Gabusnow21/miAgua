@@ -17,6 +17,11 @@ export const routes: Routes = [
                 canActivate: [authGuard]
             },
             { 
+                path: 'propietarios', 
+                loadComponent: () => import('./features/propietarios/propietarios').then(m => m.PropietariosComponent),
+                canActivate: [authGuard]
+            },
+            { 
                 path: 'lecturas', 
                 loadComponent: () => import('./features/lecturas/components/lectura-form').then(m => m.LecturaFormComponent),
                 canActivate: [authGuard]

@@ -37,7 +37,7 @@ public class PropiedadController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR')")
     public ResponseEntity<List<PropiedadDTO>> listarTodas() {
         return ResponseEntity.ok(propiedadService.listarTodas());
     }

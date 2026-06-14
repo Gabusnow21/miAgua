@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -35,7 +35,7 @@ import { Tarifa } from '../../../models/interfaces';
             <p-button label="Nueva Tarifa" icon="pi pi-plus" (onClick)="abrirDialogoNueva()"></p-button>
         </div>
 
-        <p-table [value]="tarifas" [loading]="loading" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'960px'">
+        <p-table [value]="tarifas()" [loading]="loading()" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'960px'">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Nombre</th>
@@ -98,8 +98,8 @@ import { Tarifa } from '../../../models/interfaces';
   `
 })
 export class TarifasListComponent implements OnInit {
-  tarifas: Tarifa[] = [];
-  loading: boolean = true;
+  tarifas = signal<Tarifa[]>([]);
+  loading = signal<boolean>(true);
   displayDialog: boolean = false;
   submitting: boolean = false;
   form: FormGroup;
@@ -122,15 +122,15 @@ export class TarifasListComponent implements OnInit {
   }
 
   cargarTarifas() {
-    this.loading = true;
+    this.loading.set(true);
     this.tarifaService.listarTodas().subscribe({
       next: (data) => {
-        this.tarifas = data;
-        this.loading = false;
+        this.tarifas.set(data);
+        this.loading.set(false);
       },
       error: () => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las tarifas' });
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }
