@@ -11,7 +11,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { PropiedadService } from '../../../services/propiedad.service';
 import { UsuarioService } from '../../../services/usuario.service';
-import { Propiedad, Usuario } from '../../../models/interfaces';
+import { Propiedad, Usuario, UserRole } from '../../../models/interfaces';
 
 @Component({
   selector: 'app-propiedades-list',
@@ -88,7 +88,7 @@ import { Propiedad, Usuario } from '../../../models/interfaces';
         </p-table>
     </div>
 
-    <p-dialog [(visible)]="displayDialog" [header]="editMode ? 'Editar Propiedad' : 'Nueva Propiedad'" [modal]="true" [style]="{width: '450px'}">
+    <p-dialog [(visible)]="displayDialog" [header]="editMode ? 'Editar Propiedad' : 'Nueva Propiedad'" [modal]="true" [style]="{width: '450px', minHeight: '400px'}">
         <form [formGroup]="form" (ngSubmit)="guardar()" class="flex flex-column gap-3 py-2">
             <div class="flex flex-column gap-2">
                 <label for="codigo">Código de Propiedad</label>
@@ -109,7 +109,8 @@ import { Propiedad, Usuario } from '../../../models/interfaces';
                     [filter]="true"
                     filterBy="fullName"
                     placeholder="Seleccione un propietario" 
-                    styleClass="w-full">
+                    styleClass="w-full"
+                    appendTo="body">
                 </p-select>
             </div>
         </form>
@@ -169,8 +170,10 @@ export class PropiedadesListComponent implements OnInit {
   cargarUsuarios() {
     this.usuarioService.listarTodos().subscribe({
       next: (data) => {
-        // Podríamos filtrar solo por VECINOS si fuera necesario
-        this.usuarios = data;
+        console.log('Usuarios cargados:', data);
+        // Filtramos solo los que tienen rol VECINO para asignar propiedades
+        this.usuarios = data.filter(u => u.role === UserRole.VECINO);
+        console.log('Vecinos filtrados:', this.usuarios);
       },
       error: (err) => {
         console.error('Error cargando usuarios', err);
