@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -35,7 +35,7 @@ import { Usuario, UserRole } from '../../../models/interfaces';
             <p-button label="Nuevo Usuario" icon="pi pi-plus" (onClick)="abrirDialogoNuevo()"></p-button>
         </div>
 
-        <p-table [value]="usuarios" [loading]="loading" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'960px'">
+        <p-table [value]="usuarios()" [loading]="loading()" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'960px'">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Nombre</th>
@@ -114,8 +114,8 @@ import { Usuario, UserRole } from '../../../models/interfaces';
   `
 })
 export class UsuariosListComponent implements OnInit {
-  usuarios: Usuario[] = [];
-  loading: boolean = true;
+  usuarios = signal<Usuario[]>([]);
+  loading = signal<boolean>(true);
   displayDialog: boolean = false;
   submitting: boolean = false;
   editMode: boolean = false;
@@ -148,15 +148,15 @@ export class UsuariosListComponent implements OnInit {
   }
 
   cargarUsuarios() {
-    this.loading = true;
+    this.loading.set(true);
     this.usuarioService.listarTodos().subscribe({
       next: (data) => {
-        this.usuarios = data;
-        this.loading = false;
+        this.usuarios.set(data);
+        this.loading.set(false);
       },
       error: () => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los usuarios' });
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }

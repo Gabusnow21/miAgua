@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -37,13 +37,13 @@ import { Propiedad, Usuario, UserRole } from '../../../models/interfaces';
         </div>
 
         <p-table 
-            [value]="propiedades" 
+            [value]="propiedades()" 
             [responsiveLayout]="'stack'" 
             [breakpoint]="'960px'"
             [paginator]="true" 
             [rows]="10" 
             styleClass="p-datatable-sm"
-            [loading]="loading">
+            [loading]="loading()">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Código</th>
@@ -102,7 +102,7 @@ import { Propiedad, Usuario, UserRole } from '../../../models/interfaces';
                 <label for="propietarioId">Propietario</label>
                 <p-select 
                     id="propietarioId" 
-                    [options]="usuarios" 
+                    [options]="usuarios()" 
                     formControlName="propietarioId" 
                     optionLabel="fullName" 
                     optionValue="id"
@@ -124,9 +124,9 @@ import { Propiedad, Usuario, UserRole } from '../../../models/interfaces';
   `
 })
 export class PropiedadesListComponent implements OnInit {
-  propiedades: Propiedad[] = [];
-  usuarios: Usuario[] = [];
-  loading: boolean = true;
+  propiedades = signal<Propiedad[]>([]);
+  usuarios = signal<Usuario[]>([]);
+  loading = signal<boolean>(true);
   displayDialog: boolean = false;
   submitting: boolean = false;
   editMode: boolean = false;
@@ -153,16 +153,16 @@ export class PropiedadesListComponent implements OnInit {
   }
 
   cargarPropiedades() {
-    this.loading = true;
+    this.loading.set(true);
     this.propiedadService.listarTodas().subscribe({
       next: (data) => {
-        this.propiedades = data;
-        this.loading = false;
+        this.propiedades.set(data);
+        this.loading.set(false);
       },
       error: (err) => {
         console.error('Error cargando propiedades', err);
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las propiedades' });
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }
@@ -170,10 +170,8 @@ export class PropiedadesListComponent implements OnInit {
   cargarUsuarios() {
     this.usuarioService.listarTodos().subscribe({
       next: (data) => {
-        console.log('Usuarios cargados:', data);
-        // Filtramos solo los que tienen rol VECINO para asignar propiedades
-        this.usuarios = data.filter(u => u.role === UserRole.VECINO);
-        console.log('Vecinos filtrados:', this.usuarios);
+        const filtered = data.filter(u => u.role === UserRole.VECINO);
+        this.usuarios.set(filtered);
       },
       error: (err) => {
         console.error('Error cargando usuarios', err);
@@ -217,10 +215,6 @@ export class PropiedadesListComponent implements OnInit {
   toggleEstado(propiedad: Propiedad) {
     if (!propiedad.id) return;
     const nuevoEstado = !propiedad.activo;
-    
-    // Si desactivamos, usamos el endpoint de eliminar (que desactiva en el backend)
-    // Pero para ser más consistentes, podríamos usar actualizar.
-    // El backend PropiedadServiceImpl.eliminarPropiedad pone activo = false.
     
     if (!nuevoEstado) {
         this.propiedadService.eliminar(propiedad.id).subscribe({

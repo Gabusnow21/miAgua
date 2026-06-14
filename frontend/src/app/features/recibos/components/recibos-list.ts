@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -36,13 +36,13 @@ import { Recibo, PaymentStatus } from '../../../models/interfaces';
         </div>
 
         <p-table 
-            [value]="recibos" 
+            [value]="recibos()" 
             [responsiveLayout]="'stack'" 
             [breakpoint]="'960px'"
             [paginator]="true" 
             [rows]="10" 
             styleClass="p-datatable-sm"
-            [loading]="loading">
+            [loading]="loading()">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Periodo</th>
@@ -142,8 +142,8 @@ import { Recibo, PaymentStatus } from '../../../models/interfaces';
   `
 })
 export class RecibosListComponent implements OnInit {
-  recibos: Recibo[] = [];
-  loading: boolean = true;
+  recibos = signal<Recibo[]>([]);
+  loading = signal<boolean>(true);
   displayPagoModal: boolean = false;
   selectedRecibo: Recibo | null = null;
   submittingPago: boolean = false;
@@ -160,20 +160,20 @@ export class RecibosListComponent implements OnInit {
   }
 
   cargarRecibos() {
-    this.loading = true;
+    this.loading.set(true);
     // Por ahora usamos un ID hardcodeado (vecino de prueba) hasta implementar Auth
     // En una app real, esto vendría del AuthService
     const usuarioId = 3; 
 
     this.reciboService.listarPorPropietario(usuarioId).subscribe({
       next: (data) => {
-        this.recibos = data;
-        this.loading = false;
+        this.recibos.set(data);
+        this.loading.set(false);
       },
       error: (err) => {
         console.error('Error cargando recibos', err);
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los recibos' });
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }
