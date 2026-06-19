@@ -18,8 +18,8 @@ import { DonationButtonComponent } from './donation-button';
         </div>
       </main>
 
-      <footer class="layout-footer p-3 text-center border-top-1 surface-border surface-section">
-        <span class="text-600">miAgua - Sistema de Gestión de Agua ADESCO &copy; 2026</span>
+      <footer class="layout-footer">
+        <span>miAgua — Sistema de Gestión de Agua ADESCO &copy; 2026</span>
       </footer>
 
       <app-donation-button></app-donation-button>
@@ -27,7 +27,15 @@ import { DonationButtonComponent } from './donation-button';
   `,
   styles: [`
     .layout-wrapper {
-        background-color: var(--surface-ground);
+        background: linear-gradient(135deg, #080d1a 0%, #0f172a 50%, #0a1628 100%);
+    }
+
+    .layout-footer {
+        text-align: center;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.3);
     }
   `]
 })

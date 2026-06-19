@@ -99,13 +99,13 @@ import { RouterLink } from '@angular/router';
             position: relative;
             min-height: calc(100vh - 140px);
             background: linear-gradient(135deg, #080d1a 0%, #0f172a 50%, #0a1628 100%);
-            border-radius: 1rem;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem;
-            margin: -1rem;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            overflow: hidden;
         }
 
         .deco-glow {
