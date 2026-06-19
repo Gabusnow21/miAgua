@@ -10,6 +10,7 @@ import dev.gabus.mi.agua.model.enums.PaymentStatus;
 import dev.gabus.mi.agua.repository.PagoRepository;
 import dev.gabus.mi.agua.repository.ReciboRepository;
 import dev.gabus.mi.agua.repository.UsuarioRepository;
+import dev.gabus.mi.agua.service.FileStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +33,8 @@ class PagoServiceImplTest {
     private ReciboRepository reciboRepository;
     @Mock
     private UsuarioRepository usuarioRepository;
+    @Mock
+    private FileStorageService fileStorageService;
 
     @InjectMocks
     private PagoServiceImpl pagoService;
@@ -55,7 +58,9 @@ class PagoServiceImplTest {
     @Test
     void registrarPago_Success() {
         // Arrange
+        org.springframework.web.multipart.MultipartFile mockFile = mock(org.springframework.web.multipart.MultipartFile.class);
         when(reciboRepository.findById(1L)).thenReturn(Optional.of(recibo));
+        when(fileStorageService.storeFile(mockFile)).thenReturn("http://local/file.png");
         when(pagoRepository.save(any(Pago.class))).thenAnswer(invocation -> {
             Pago p = invocation.getArgument(0);
             p.setId(1L);
@@ -63,13 +68,14 @@ class PagoServiceImplTest {
         });
 
         // Act
-        PagoDTO result = pagoService.registrarPago(requestDTO);
+        PagoDTO result = pagoService.registrarPago(requestDTO, mockFile);
 
         // Assert
         assertNotNull(result);
         assertEquals(PaymentStatus.EN_REVISION, recibo.getEstado());
         verify(reciboRepository, times(1)).save(recibo);
         verify(pagoRepository, times(1)).save(any(Pago.class));
+        verify(fileStorageService, times(1)).storeFile(mockFile);
     }
 
     @Test

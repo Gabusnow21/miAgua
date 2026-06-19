@@ -62,6 +62,7 @@ export class NavbarComponent implements OnInit {
       } else if (role === 'ADMIN' || role === 'OPERADOR') {
         this.items.push(
           { label: 'Propiedades', icon: 'pi pi-building', routerLink: '/propiedades' },
+          { label: 'Propietarios', icon: 'pi pi-users', routerLink: '/propietarios' },
           { label: 'Lecturas', icon: 'pi pi-pencil', routerLink: '/lecturas' },
           { label: 'Recibos', icon: 'pi pi-file-pdf', routerLink: '/recibos' }
         );
