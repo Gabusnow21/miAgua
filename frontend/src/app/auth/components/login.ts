@@ -23,7 +23,10 @@ import { CommonModule } from '@angular/common';
             <div class="login-content">
                 <div class="brand">
                     <div class="brand-icon">
-                        <i class="pi pi-tint"></i>
+                        <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M24 44C32.2843 44 39 37.2843 39 29C39 15 24 4 24 4C24 4 9 15 9 29C9 37.2843 15.7157 44 24 44Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 29C9 37.2843 15.7157 44 24 44C32.2843 44 39 37.2843 39 29C39 29 30 32 24 29C18 26 9 29 9 29Z" fill="currentColor" fill-opacity="0.3" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+                        </svg>
                     </div>
                     <h1 class="brand-title">miAgua</h1>
                     <p class="brand-subtitle">Sistema de Gestión de Agua</p>
