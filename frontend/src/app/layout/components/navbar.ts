@@ -31,11 +31,14 @@ import { AuthService } from '../../auth/services/auth.service';
   `,
   styles: [`
     :host ::ng-deep .p-menubar {
+        position: relative;
+        z-index: 100;
         background: rgba(8, 13, 26, 0.92);
         backdrop-filter: blur(12px);
         border: none;
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         padding: 0.5rem 1.5rem;
+        overflow: visible;
     }
 
     :host ::ng-deep .p-menubar .p-menubar-item-content {
@@ -58,11 +61,12 @@ import { AuthService } from '../../auth/services/auth.service';
     }
 
     :host ::ng-deep .p-menubar .p-submenu-list {
-        background: rgba(15, 23, 42, 0.96);
+        background: rgba(8, 13, 26, 0.93);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 0.75rem;
         padding: 0.25rem;
+        z-index: 1001;
     }
 
     :host ::ng-deep .p-menubar .p-menubar-button {

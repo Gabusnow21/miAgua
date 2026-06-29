@@ -27,8 +27,8 @@ import { Router } from '@angular/router';
   ],
   providers: [MessageService],
   template: `
-    <div class="flex justify-content-center p-2">
-      <div class="card w-full md:w-8 lg:w-6 shadow-2 border-round p-4 bg-surface-50">
+    <div class="flex justify-content-center">
+      <div class="card w-full md:w-8 lg:w-6">
         <div class="flex align-items-center mb-4 text-primary">
           <i class="pi pi-pencil text-2xl mr-2"></i>
           <h2 class="m-0 text-xl font-bold">Registrar Lectura</h2>
