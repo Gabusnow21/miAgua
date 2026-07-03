@@ -4,14 +4,18 @@
 
 /* Base Styles */
 :root {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+h1, h2, h3, h4, h5, h6, .font-bold {
+    font-family: 'Sora', sans-serif;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background-color: var(--surface-ground);
-    color: var(--text-color);
+    background-color: #080d1a;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 /* Mobile-First Responsive Utilities */
@@ -29,7 +33,6 @@ body {
         max-width: 960px;
     }
     
-    /* Hide PrimeNG table responsive column titles on desktop */
     .p-datatable .p-column-title {
         display: none;
     }
@@ -47,4 +50,353 @@ body {
     .container {
         max-width: 1140px;
     }
+}
+
+/* ==================== */
+/* Dark Theme Overrides  */
+/* ==================== */
+
+/* Card wrapper */
+.card {
+    background: rgba(15, 23, 42, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: 0.75rem !important;
+    padding: 1.5rem !important;
+    box-shadow: none !important;
+    backdrop-filter: blur(4px);
+}
+
+.card h2,
+.card .p-datatable .p-column-title {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* DataTable */
+.p-datatable .p-datatable-thead > tr > th {
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: rgba(255, 255, 255, 0.55) !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.75rem 1rem !important;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    border-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+    background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.015) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.75rem 1rem !important;
+}
+
+.p-datatable .p-datatable-emptymessage td {
+    color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Input fields */
+.p-inputtext {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    border-radius: 0.5rem !important;
+    padding: 0.6rem 0.75rem !important;
+    transition: border-color 0.2s;
+}
+
+.p-inputtext:enabled:focus {
+    border-color: rgba(20, 184, 166, 0.5) !important;
+    box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.12) !important;
+}
+
+.p-inputtext::placeholder {
+    color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Select (p-select) */
+.p-select {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 0.5rem !important;
+    min-height: 42px;
+}
+
+.p-select .p-select-label {
+    color: rgba(255, 255, 255, 0.65) !important;
+    padding: 0.6rem 0.75rem !important;
+}
+
+.p-select .p-select-trigger {
+    color: rgba(255, 255, 255, 0.3) !important;
+    width: 2.5rem !important;
+}
+
+.p-select-overlay {
+    background: rgba(15, 23, 42, 0.98) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 0.5rem !important;
+    backdrop-filter: blur(8px);
+}
+
+.p-select-overlay .p-select-option {
+    color: rgba(255, 255, 255, 0.7) !important;
+    padding: 0.6rem 0.75rem !important;
+}
+
+.p-select-overlay .p-select-option:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.p-select-overlay .p-select-option.p-select-option-selected {
+    background: rgba(20, 184, 166, 0.12) !important;
+    color: #14b8a6 !important;
+}
+
+/* Textarea */
+.p-textarea {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    border-radius: 0.5rem !important;
+}
+
+.p-textarea:enabled:focus {
+    border-color: rgba(20, 184, 166, 0.5) !important;
+    box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.12) !important;
+}
+
+/* InputNumber */
+.p-inputnumber .p-inputtext {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.p-inputnumber-button {
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.p-inputnumber-button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Dialog */
+.p-dialog {
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 0.75rem !important;
+}
+
+.p-dialog .p-dialog-header {
+    background: rgba(15, 23, 42, 0.98) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    padding: 1rem 1.5rem !important;
+}
+
+.p-dialog .p-dialog-content {
+    background: rgba(15, 23, 42, 0.98) !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    padding: 1.5rem !important;
+}
+
+.p-dialog .p-dialog-footer {
+    background: rgba(15, 23, 42, 0.98) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: 0 0 0.75rem 0.75rem !important;
+    padding: 1rem 1.5rem !important;
+}
+
+.p-dialog label {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600 !important;
+}
+
+/* FileUpload */
+.p-fileupload {
+    background: transparent !important;
+}
+
+.p-fileupload .p-fileupload-buttonbar {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* Toast */
+.p-toast .p-toast-message {
+    border-radius: 0.5rem !important;
+}
+
+.p-toast .p-toast-message .p-toast-message-content {
+    border-width: 0 !important;
+}
+
+/* Tags - severity colors for dark bg */
+.p-tag.p-tag-success {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #34d399 !important;
+}
+
+.p-tag.p-tag-warning {
+    background: rgba(245, 158, 11, 0.15) !important;
+    color: #fbbf24 !important;
+}
+
+.p-tag.p-tag-danger {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #f87171 !important;
+}
+
+.p-tag.p-tag-info {
+    background: rgba(59, 130, 246, 0.15) !important;
+    color: #60a5fa !important;
+}
+
+.p-tag.p-tag-secondary {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Utility overrides for dark theme */
+.text-600 {
+    color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.text-500 {
+    color: rgba(255, 255, 255, 0.45) !important;
+}
+
+.text-red-500 {
+    color: #f87171 !important;
+}
+
+.text-green-500 {
+    color: #34d399 !important;
+}
+
+.text-blue-500 {
+    color: #60a5fa !important;
+}
+
+.text-orange-500 {
+    color: #fb923c !important;
+}
+
+.text-purple-500 {
+    color: #a78bfa !important;
+}
+
+.text-primary {
+    color: #14b8a6 !important;
+}
+
+/* Buttons on dark */
+.p-button.p-button-text {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.p-button.p-button-text:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.p-button.p-button-secondary.p-button-text {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Divider / border utility */
+.surface-border {
+    border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.surface-section {
+    background: transparent !important;
+}
+
+/* Main layout padding adjustments for dark .card context */
+.card .flex.flex-column.gap-2 label {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+}
+
+/* Paginator */
+.p-paginator {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.45) !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    padding: 0.75rem 0 !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+    color: rgba(255, 255, 255, 0.45) !important;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background: rgba(20, 184, 166, 0.12) !important;
+    color: #14b8a6 !important;
+}
+
+.p-paginator .p-paginator-element {
+    color: rgba(255, 255, 255, 0.35) !important;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem !important;
+}
+
+.p-paginator .p-paginator-element:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Dialog header icon */
+.p-dialog .p-dialog-header .p-dialog-header-icon {
+    color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Table loading overlay */
+.p-datatable .p-datatable-loading-overlay {
+    background: rgba(8, 13, 26, 0.7) !important;
+}
+
+/* Select filter input inside overlay */
+.p-select-overlay .p-select-filter-container .p-inputtext {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* FileUpload basic mode button */
+.p-fileupload .p-button {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.p-fileupload .p-button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
 }

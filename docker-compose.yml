@@ -10,8 +10,6 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -35,22 +33,26 @@ services:
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET_KEY: ${JWT_SECRET}
-    ports:
-      - "8080:8080"
     networks:
       - adesco_network
+      - proxy-network
 
   # 3. FRONTEND (Angular + Nginx)
   frontend:
     build: ./frontend
     container_name: adesco_frontend
     restart: always
-    ports:
-      - "80:80"
     depends_on:
       - backend
     networks:
       - adesco_network
+      - proxy-network
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=proxy-network'
+      - 'traefik.http.routers.adesco-frontend.rule=Host(`miagua.edumathsv.work`)'
+      - 'traefik.http.routers.adesco-frontend.entrypoints=web'
+      - 'traefik.http.services.adesco-frontend.loadbalancer.server.port=80'
 
 volumes:
   postgres_data:
@@ -58,3 +60,5 @@ volumes:
 networks:
   adesco_network:
     driver: bridge
+  proxy-network:
+    external: true

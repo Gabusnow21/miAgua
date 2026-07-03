@@ -4,6 +4,8 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { authInterceptor } from './auth/interceptors/auth.interceptor';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
+import { provideLottieOptions } from 'ngx-lottie';
+import player from 'lottie-web';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
@@ -21,6 +23,9 @@ export const appConfig: ApplicationConfig = {
         theme: {
             preset: Aura
         }
-    })
+    }),
+    provideLottieOptions({
+      player: () => player,
+    }),
   ]
 };
