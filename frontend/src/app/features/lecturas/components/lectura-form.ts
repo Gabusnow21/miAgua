@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
@@ -39,7 +39,7 @@ import { Router } from '@angular/router';
             <label for="propiedad" class="font-semibold">Propiedad</label>
             <p-select 
               id="propiedad"
-              [options]="propiedades" 
+              [options]="propiedades()" 
               formControlName="propiedadId" 
               optionLabel="codigo" 
               optionValue="id"
@@ -56,9 +56,11 @@ import { Router } from '@angular/router';
                 </div>
               </ng-template>
             </p-select>
-            <small class="text-red-500" *ngIf="form.get('propiedadId')?.touched && form.get('propiedadId')?.invalid">
-              La propiedad es obligatoria.
-            </small>
+            @if (form.get('propiedadId')?.touched && form.get('propiedadId')?.invalid) {
+              <small class="text-red-500">
+                La propiedad es obligatoria.
+              </small>
+            }
           </div>
 
           <div class="grid p-0 m-0 gap-4 md:gap-0">
@@ -104,9 +106,11 @@ import { Router } from '@angular/router';
               incrementButtonIcon="pi pi-plus"
               decrementButtonIcon="pi pi-minus">
             </p-inputNumber>
-            <small class="text-red-500" *ngIf="form.get('lecturaActual')?.touched && form.get('lecturaActual')?.invalid">
-              La lectura actual es obligatoria.
-            </small>
+            @if (form.get('lecturaActual')?.touched && form.get('lecturaActual')?.invalid) {
+              <small class="text-red-500">
+                La lectura actual es obligatoria.
+              </small>
+            }
           </div>
 
           <div class="flex flex-column gap-2">
@@ -125,7 +129,7 @@ import { Router } from '@angular/router';
               type="submit" 
               label="Guardar Lectura" 
               icon="pi pi-check" 
-              [loading]="submitting"
+              [loading]="submitting()"
               styleClass="w-full sm:w-auto flex-grow-1"
               [disabled]="form.invalid">
             </p-button>
@@ -134,7 +138,7 @@ import { Router } from '@angular/router';
               label="Cancelar" 
               icon="pi pi-times" 
               severity="secondary" 
-              [disabled]="submitting"
+              [disabled]="submitting()"
               styleClass="w-full sm:w-auto"
               (onClick)="onCancel()">
             </p-button>
@@ -147,8 +151,8 @@ import { Router } from '@angular/router';
 })
 export class LecturaFormComponent implements OnInit {
   form: FormGroup;
-  propiedades: Propiedad[] = [];
-  submitting: boolean = false;
+  propiedades = signal<Propiedad[]>([]);
+  submitting = signal<boolean>(false);
   
   meses = [
     { label: 'Enero', value: 1 }, { label: 'Febrero', value: 2 }, { label: 'Marzo', value: 3 },
@@ -187,7 +191,7 @@ export class LecturaFormComponent implements OnInit {
 
   cargarPropiedades() {
     this.propiedadService.listarTodas().subscribe({
-      next: (data) => this.propiedades = data,
+      next: (data) => this.propiedades.set(data),
       error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las propiedades' })
     });
   }
@@ -199,14 +203,14 @@ export class LecturaFormComponent implements OnInit {
   onSubmit() {
     if (this.form.invalid) return;
 
-    this.submitting = true;
+    this.submitting.set(true);
     this.lecturaService.registrar(this.form.value).subscribe({
       next: (res) => {
         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Lectura registrada correctamente' });
         setTimeout(() => this.router.navigate(['/lecturas']), 1500);
       },
       error: (err) => {
-        this.submitting = false;
+        this.submitting.set(false);
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Ocurrió un error al registrar la lectura' });
       }
     });

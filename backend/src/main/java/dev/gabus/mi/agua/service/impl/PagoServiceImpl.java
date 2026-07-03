@@ -10,10 +10,12 @@ import dev.gabus.mi.agua.model.enums.PaymentStatus;
 import dev.gabus.mi.agua.repository.PagoRepository;
 import dev.gabus.mi.agua.repository.ReciboRepository;
 import dev.gabus.mi.agua.repository.UsuarioRepository;
+import dev.gabus.mi.agua.service.FileStorageService;
 import dev.gabus.mi.agua.service.PagoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,19 +28,22 @@ public class PagoServiceImpl implements PagoService {
     private final PagoRepository pagoRepository;
     private final ReciboRepository reciboRepository;
     private final UsuarioRepository usuarioRepository;
+    private final FileStorageService fileStorageService;
 
     @Override
     @Transactional
-    public PagoDTO registrarPago(PagoRequestDTO dto) {
+    public PagoDTO registrarPago(PagoRequestDTO dto, MultipartFile file) {
         Recibo recibo = reciboRepository.findById(dto.getReciboId())
                 .orElseThrow(() -> new ResourceNotFoundException("Recibo no encontrado"));
+
+        String comprobanteUrl = fileStorageService.storeFile(file);
 
         Pago pago = Pago.builder()
                 .recibo(recibo)
                 .montoPagado(dto.getMontoPagado())
                 .fechaPago(LocalDateTime.now())
                 .metodoPago(dto.getMetodoPago())
-                .comprobanteUrl(dto.getComprobanteUrl())
+                .comprobanteUrl(comprobanteUrl)
                 .referenciaTransaccion(dto.getReferenciaTransaccion())
                 .build();
 

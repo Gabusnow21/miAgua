@@ -12,4 +12,5 @@ public interface LecturaRepository extends JpaRepository<Lectura, Long> {
     List<Lectura> findByPropiedadId(Long propiedadId);
     Optional<Lectura> findTopByPropiedadIdOrderByAnioDescMesDesc(Long propiedadId);
     List<Lectura> findByAnioAndMes(Integer anio, Integer mes);
+    boolean existsByPropiedadIdAndAnioAndMes(Long propiedadId, Integer anio, Integer mes);
 }

@@ -28,6 +28,18 @@ body {
     .container {
         max-width: 960px;
     }
+    
+    /* Hide PrimeNG table responsive column titles on desktop */
+    .p-datatable .p-column-title {
+        display: none;
+    }
+}
+
+/* Medium screens (match PrimeNG breakpoint) */
+@media screen and (min-width: 961px) {
+    .p-datatable .p-column-title {
+        display: none;
+    }
 }
 
 /* Extra large screens */

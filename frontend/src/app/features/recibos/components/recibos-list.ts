@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -36,13 +36,13 @@ import { Recibo, PaymentStatus } from '../../../models/interfaces';
         </div>
 
         <p-table 
-            [value]="recibos" 
+            [value]="recibos()" 
             [responsiveLayout]="'stack'" 
             [breakpoint]="'960px'"
             [paginator]="true" 
             [rows]="10" 
             styleClass="p-datatable-sm"
-            [loading]="loading">
+            [loading]="loading()">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Periodo</th>
@@ -69,15 +69,16 @@ import { Recibo, PaymentStatus } from '../../../models/interfaces';
                     <td>
                         <span class="p-column-title font-bold">Acciones</span>
                         <div class="flex gap-2">
-                            <p-button 
-                                *ngIf="recibo.estado === 'PENDIENTE' || recibo.estado === 'RECHAZADO'"
-                                icon="pi pi-upload" 
-                                label="Pagar"
-                                [rounded]="true" 
-                                severity="primary"
-                                size="small"
-                                (onClick)="abrirModalPago(recibo)">
-                            </p-button>
+                            @if (recibo.estado === 'PENDIENTE' || recibo.estado === 'RECHAZADO') {
+                                <p-button 
+                                    icon="pi pi-upload" 
+                                    label="Pagar"
+                                    [rounded]="true" 
+                                    severity="primary"
+                                    size="small"
+                                    (onClick)="abrirModalPago(recibo)">
+                                </p-button>
+                            }
                             <p-button 
                                 icon="pi pi-eye" 
                                 [rounded]="true" 
@@ -141,8 +142,8 @@ import { Recibo, PaymentStatus } from '../../../models/interfaces';
   `
 })
 export class RecibosListComponent implements OnInit {
-  recibos: Recibo[] = [];
-  loading: boolean = true;
+  recibos = signal<Recibo[]>([]);
+  loading = signal<boolean>(true);
   displayPagoModal: boolean = false;
   selectedRecibo: Recibo | null = null;
   submittingPago: boolean = false;
@@ -159,20 +160,20 @@ export class RecibosListComponent implements OnInit {
   }
 
   cargarRecibos() {
-    this.loading = true;
+    this.loading.set(true);
     // Por ahora usamos un ID hardcodeado (vecino de prueba) hasta implementar Auth
     // En una app real, esto vendría del AuthService
     const usuarioId = 3; 
 
     this.reciboService.listarPorPropietario(usuarioId).subscribe({
       next: (data) => {
-        this.recibos = data;
-        this.loading = false;
+        this.recibos.set(data);
+        this.loading.set(false);
       },
       error: (err) => {
         console.error('Error cargando recibos', err);
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los recibos' });
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }
@@ -202,24 +203,25 @@ export class RecibosListComponent implements OnInit {
   }
 
   enviarPago() {
-    if (!this.selectedRecibo) return;
+    if (!this.selectedRecibo || !this.uploadedFile) {
+        this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'Debe seleccionar un comprobante' });
+        return;
+    }
 
     this.submittingPago = true;
     
-    // Simulamos el envío del pago
-    // En el backend, esto requiere el reciboId y otros datos
     const pagoRequest = {
       reciboId: this.selectedRecibo.id,
       montoPagado: this.selectedRecibo.montoTotal,
       metodoPago: 'TRANSFERENCIA'
-      // El archivo se enviaría en una petición multipart si el backend lo soporta
     };
 
-    this.pagoService.registrar(pagoRequest).subscribe({
+    this.pagoService.registrar(pagoRequest, this.uploadedFile).subscribe({
       next: () => {
         this.messageService.add({ severity: 'success', summary: 'Pago Enviado', detail: 'Su comprobante está en revisión' });
         this.displayPagoModal = false;
         this.submittingPago = false;
+        this.uploadedFile = null;
         this.cargarRecibos(); // Recargar para ver el cambio de estado a EN_REVISION
       },
       error: (err) => {

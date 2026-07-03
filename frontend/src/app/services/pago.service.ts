@@ -12,8 +12,11 @@ export class PagoService {
 
   constructor(private http: HttpClient) { }
 
-  registrar(pago: Partial<Pago>): Observable<Pago> {
-    return this.http.post<Pago>(this.apiUrl, pago);
+  registrar(pago: any, file: File): Observable<Pago> {
+    const formData = new FormData();
+    formData.append('pago', new Blob([JSON.stringify(pago)], { type: 'application/json' }));
+    formData.append('file', file);
+    return this.http.post<Pago>(this.apiUrl, formData);
   }
 
   verificar(id: number, aprobado: boolean): Observable<void> {
